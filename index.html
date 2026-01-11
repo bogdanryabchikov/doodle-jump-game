@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle Jump - Школа 258</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #1a1a2e; 
+            color: white; 
+            font-family: Arial;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        h1 { color: #ff6b6b; margin: 20px; }
+        #game { 
+            border: 3px solid #4ecdc4; 
+            border-radius: 10px;
+            background: #162447;
+        }
+        .controls { margin: 20px; }
+        button { 
+            padding: 15px 25px; 
+            margin: 5px;
+            background: #4ecdc4;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>DOODLE JUMP - Школа 258</h1>
+    <canvas id="game" width="400" height="600"></canvas>
+    <div class="controls">
+        <button id="left">←</button>
+        <button id="right">→</button>
+        <button id="jump">ПРЫЖОК</button>
+    </div>
+    
+    <script>
+        // Простой код игры
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        
+        let player = { x: 200, y: 500, vy: 0 };
+        let score = 0;
+        
+        function draw() {
+            // Фон
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, 400, 600);
+            
+            // Игрок
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillRect(player.x - 15, player.y - 20, 30, 40);
+            
+            // Счет
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.fillText('Очки: ' + score, 10, 30);
+        }
+        
+        function update() {
+            player.vy += 0.5;
+            player.y += player.vy;
+            
+            if (player.y > 600) {
+                player.y = 500;
+                player.vy = 0;
+                score += 100;
+            }
+        }
+        
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Управление
+        document.getElementById('left').addEventListener('click', () => player.x -= 20);
+        document.getElementById('right').addEventListener('click', () => player.x += 20);
+        document.getElementById('jump').addEventListener('click', () => player.vy = -15);
+        
+        // Запуск
+        gameLoop();
+        
+        // Для мобильного управления
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+            if (touchX < 200) player.x -= 20;
+            else player.x += 20;
+            player.vy = -15;
+        });
+    </script>
+</body>
+</html>
